@@ -63,6 +63,7 @@ def lambda_handler(event, context):
             }
             send_email = False
 
+        # only sned the email if it is a good request
         if send_email is True:
             mailjet_public_key, mailjet_private_key = get_mailjet_creds()
 
@@ -109,5 +110,4 @@ def lambda_handler(event, context):
         "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
     }
 
-    # TODO implement
     return api_response
