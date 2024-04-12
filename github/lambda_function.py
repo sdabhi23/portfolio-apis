@@ -54,29 +54,20 @@ def lambda_handler(event, context):
 
         # only run the GitHub query if it is a good request
         if query_github is True:
-            payload = json.dumps(
-                {
-                    "query": """{
-                        repo1: repository(name: "bsedata", owner: "sdabhi23") {
+            repos_list = event["queryStringParameters"].get("repos", "").split(",")
+            query_string = "{\n"
+            for idx, reponame in enumerate(repos_list, 1):
+                query_string += f"""
+                    repo{idx}: repository(name: "{reponame}", owner: "sdabhi23") {{
                             openGraphImageUrl
                             url
                             nameWithOwner
-                        }
+                        }}
 
-                        repo2: repository(name: "Twitter-Clone", owner: "sdabhi23") {
-                            openGraphImageUrl
-                            url
-                            nameWithOwner
-                        }
+                """
 
-                        repo3: repository(name: "monaco-json-viewer", owner: "sdabhi23") {
-                            openGraphImageUrl
-                            url
-                            nameWithOwner
-                        }
-                      }"""
-                }
-            ).encode("utf-8")
+            query_string += "}"
+            payload = json.dumps({"query": query_string}).encode("utf-8")
 
             headers = {"Content-Type": "application/json", "Authorization": f"Bearer {get_github_token()}"}
 
