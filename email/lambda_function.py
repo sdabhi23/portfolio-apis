@@ -56,7 +56,12 @@ def lambda_handler(event, context):
 
         request_body = json.loads(event["body"])
 
-        if "name" not in request_body.keys():
+        if (
+            "name" not in request_body.keys()
+            or "email" not in request_body.keys()
+            or "purpose" not in request_body.keys()
+            or "message" not in request_body.keys()
+        ):
             api_response = {
                 "statusCode": 400,
                 "body": json.dumps({"error": "Bad Request. Required values not found."}),
